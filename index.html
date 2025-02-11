@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Arbres</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="script.js"></script>
+</head>
+<body>
+
+    <header>
+        <img src="logo_sncf.png" alt="Logo SNCF" class="logo">
+        <p class="credit">Création de <i>Jules VERILHAC</i></p>
+        <button id="toggle-dark-mode">🌙 Mode sombre</button>
+    </header>
+
+    <main>
+        <form id="tree-form">
+            <h2>Formulaire de saisie</h2>
+
+            <label for="voie">Voie :</label>
+            <select id="voie" required>
+                <option value="V1">V1 (GAUCHE)</option>
+                <option value="V2">V2 (DROITE)</option>
+            </select>
+
+            <label for="pk-debut">PK Début :</label>
+            <input type="text" id="pk-debut" required>
+
+            <label for="pk-fin">PK Fin :</label>
+            <input type="text" id="pk-fin">
+
+            <label for="cote">Côté :</label>
+            <input type="text" id="cote" readonly>
+
+            <label for="distance-voie">Distance voie :</label>
+            <input type="number" id="distance-voie" required>
+
+            <label for="nombre-arbres">Nombre d'arbres :</label>
+            <input type="number" id="nombre-arbres" required>
+
+            <label for="proprietaire">Propriétaire :</label>
+            <select id="proprietaire" required>
+                <option value="SNCF">SNCF</option>
+                <option value="TIERS">TIERS</option>
+            </select>
+
+            <label for="decision">Décision :</label>
+            <select id="decision" required>
+                <option value="Surveiller">Surveiller</option>
+                <option value="Élaguer">Élaguer</option>
+                <option value="Couper">Couper</option>
+            </select>
+
+            <label>État de l'arbre :</label>
+            <div class="checkbox-group">
+                <input type="radio" name="etat-arbre" id="arbre-mort" value="mort">
+                <label for="arbre-mort">Arbre Mort</label>
+
+                <input type="radio" name="etat-arbre" id="arbre-vivant" value="vivant" checked>
+                <label for="arbre-vivant">Arbre Vivant</label>
+            </div>
+
+            <label for="stabilite">Stabilité :</label>
+            <input type="checkbox" id="stabilite">
+
+            <label for="maladie">Maladie :</label>
+            <input type="checkbox" id="maladie">
+
+            <label for="commentaire">Commentaire :</label>
+            <textarea id="commentaire"></textarea>
+
+            <button type="submit">Ajouter</button>
+        </form>
+
+        <table id="data-table">
+            <thead>
+                <tr>
+                    <th>Voie</th>
+                    <th>PK Début</th>
+                    <th>PK Fin</th>
+                    <th>Côté</th>
+                    <th>Distance voie</th>
+                    <th>Nombre d'arbres</th>
+                    <th>Propriétaire</th>
+                    <th>Décision</th>
+                    <th>Urgence</th>
+                    <th>Stabilité</th>
+                    <th>Maladie</th>
+                    <th>Commentaire</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <button id="export-excel">Exporter en Excel</button>
+        <button id="reset-data" class="danger">Réinitialiser</button>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+</body>
+</html>
