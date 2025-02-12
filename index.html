@@ -1,105 +1,178 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion des Arbres</title>
-    <link rel="stylesheet" href="styles.css">
-    <script defer src="script.js"></script>
+  <meta charset="UTF-8" />
+  <title>Application Saisie Arbres</title>
+  <!-- Feuille de style -->
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Librairie SheetJS pour l'export Excel -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
 
-    <header>
-        <img src="logo_sncf.png" alt="Logo SNCF" class="logo">
-        <p class="credit">Création de <i>Jules VERILHAC</i></p>
-        <button id="toggle-dark-mode">🌙 Mode sombre</button>
-    </header>
+  <!-- Logo SNCF en haut à droite + signature -->
+  <header>
+    <div class="header-content">
+      <div class="sncf-logo">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/SNCF_logo_2011.svg/120px-SNCF_logo_2011.svg.png" 
+             alt="Logo SNCF">
+        <p class="signature">création de Jules VERILHAC</p>
+      </div>
+    </div>
+  </header>
 
-    <main>
-        <form id="tree-form">
-            <h2>Formulaire de saisie</h2>
+  <!-- Bouton pour activer/désactiver le mode sombre -->
+  <button id="darkModeToggle">Mode Sombre</button>
 
-            <label for="voie">Voie :</label>
-            <select id="voie" required>
-                <option value="V1">V1 (GAUCHE)</option>
-                <option value="V2">V2 (DROITE)</option>
-            </select>
+  <!-- Pop-up pour choisir la ligne au chargement + bouton de changement -->
+  <div id="lineSelectionOverlay" class="overlay">
+    <div class="popup">
+      <h2>Choisir une ligne</h2>
+      <select id="initialLineSelect">
+        <option value="" disabled selected>-- Sélectionnez une ligne --</option>
+        <option value="L909000">L909000</option>
+        <option value="L908000">L908000</option>
+        <option value="L909903">L909903</option>
+        <option value="L903000">L903000</option>
+        <option value="L905000">L905000</option>
+      </select>
+      <button id="confirmLineBtn">Valider</button>
+    </div>
+  </div>
 
-            <label for="pk-debut">PK Début :</label>
-            <input type="text" id="pk-debut" required>
+  <!-- Bannière qui affiche la ligne en cours -->
+  <div id="currentLineBanner" class="line-banner">
+    Ligne actuelle : <span id="currentLine"></span>
+    <button id="changeLineBtn" class="change-line">Changer de ligne</button>
+  </div>
 
-            <label for="pk-fin">PK Fin :</label>
-            <input type="text" id="pk-fin">
+  <!-- Section pour le formulaire -->
+  <section id="formSection">
+    <h1>Formulaire de saisie des arbres</h1>
+    <form id="treeForm">
 
-            <label for="cote">Côté :</label>
-            <input type="text" id="cote" readonly>
+      <!-- Voie -->
+      <label for="voieSelect">Voie</label>
+      <select id="voieSelect" required>
+        <option value="V1">V1</option>
+        <option value="V2">V2</option>
+      </select>
 
-            <label for="distance-voie">Distance voie :</label>
-            <input type="number" id="distance-voie" required>
+      <!-- PK Début -->
+      <label for="pkDebut">PK Début</label>
+      <input type="text" id="pkDebut" placeholder="Ex : 123+45" required />
 
-            <label for="nombre-arbres">Nombre d'arbres :</label>
-            <input type="number" id="nombre-arbres" required>
+      <!-- PK Fin -->
+      <label for="pkFin">PK Fin</label>
+      <input type="text" id="pkFin" placeholder="Ex : 124+00" />
 
-            <label for="proprietaire">Propriétaire :</label>
-            <select id="proprietaire" required>
-                <option value="SNCF">SNCF</option>
-                <option value="TIERS">TIERS</option>
-            </select>
+      <!-- Distance voie -->
+      <label for="distanceVoie">Distance voie (m)</label>
+      <input type="number" step="0.01" id="distanceVoie" required />
 
-            <label for="decision">Décision :</label>
-            <select id="decision" required>
-                <option value="Surveiller">Surveiller</option>
-                <option value="Élaguer">Élaguer</option>
-                <option value="Couper">Couper</option>
-            </select>
+      <!-- Nombre d'arbres -->
+      <label for="nbArbres">Nombre d'arbres</label>
+      <input type="number" id="nbArbres" required />
 
-            <label>État de l'arbre :</label>
-            <div class="checkbox-group">
-                <input type="radio" name="etat-arbre" id="arbre-mort" value="mort">
-                <label for="arbre-mort">Arbre Mort</label>
+      <!-- Propriétaire -->
+      <label for="proprietaireSelect">Propriétaire</label>
+      <select id="proprietaireSelect">
+        <option value="SNCF">SNCF</option>
+        <option value="TIERS">TIERS</option>
+      </select>
 
-                <input type="radio" name="etat-arbre" id="arbre-vivant" value="vivant" checked>
-                <label for="arbre-vivant">Arbre Vivant</label>
-            </div>
+      <!-- Décision -->
+      <label for="decisionSelect">Décision</label>
+      <select id="decisionSelect">
+        <option value="Surveiller">Surveiller</option>
+        <option value="Élaguer">Élaguer</option>
+        <option value="Couper">Couper</option>
+      </select>
 
-            <label for="stabilite">Stabilité :</label>
-            <input type="checkbox" id="stabilite">
+      <!-- Arbre Mort / Vivant -->
+      <fieldset>
+        <legend>Statut de l'arbre</legend>
+        <label>
+          <input type="radio" name="statutArbre" value="mort" id="arbreMort">
+          Arbre Mort
+        </label>
+        <label>
+          <input type="radio" name="statutArbre" value="vivant" id="arbreVivant">
+          Arbre Vivant
+        </label>
+      </fieldset>
 
-            <label for="maladie">Maladie :</label>
-            <input type="checkbox" id="maladie">
+      <!-- Stabilité + Maladie -->
+      <fieldset>
+        <legend>État de l'arbre</legend>
+        <label>
+          <input type="checkbox" id="checkStabilite">
+          Stabilité menacée
+        </label>
+        <label>
+          <input type="checkbox" id="checkMaladie">
+          Maladie
+        </label>
+      </fieldset>
 
-            <label for="commentaire">Commentaire :</label>
-            <textarea id="commentaire"></textarea>
+      <!-- Commentaire -->
+      <label for="commentaire">Commentaire</label>
+      <textarea id="commentaire" rows="3" placeholder="Vos remarques..."></textarea>
 
-            <button type="submit">Ajouter</button>
-        </form>
+      <!-- Bouton valider -->
+      <button type="submit" id="submitBtn">Valider</button>
+    </form>
+  </section>
 
-        <table id="data-table">
-            <thead>
-                <tr>
-                    <th>Voie</th>
-                    <th>PK Début</th>
-                    <th>PK Fin</th>
-                    <th>Côté</th>
-                    <th>Distance voie</th>
-                    <th>Nombre d'arbres</th>
-                    <th>Propriétaire</th>
-                    <th>Décision</th>
-                    <th>Urgence</th>
-                    <th>Stabilité</th>
-                    <th>Maladie</th>
-                    <th>Commentaire</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+  <!-- Section du tableau affichant les saisies -->
+  <section id="tableSection">
+    <h2>Données Saisies</h2>
+    <div class="table-wrapper">
+      <table id="dataTable">
+        <thead>
+          <tr>
+            <th>Ligne</th>
+            <th>Voie</th>
+            <th>PK Début</th>
+            <th>PK Fin</th>
+            <th>Distance</th>
+            <th>Nb Arbres</th>
+            <th>Propriétaire</th>
+            <th>Décision</th>
+            <th>Urgence</th>
+            <th>Stabilité</th>
+            <th>Maladie</th>
+            <th>Commentaire</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Les lignes seront insérées ici dynamiquement -->
+        </tbody>
+      </table>
+    </div>
+  </section>
 
-        <button id="export-excel">Exporter en Excel</button>
-        <button id="reset-data" class="danger">Réinitialiser</button>
-    </main>
+  <!-- Boutons d'export et de réinitialisation -->
+  <section id="actionButtons">
+    <button id="exportExcelBtn">Exporter en Excel</button>
+    <button id="resetDataBtn" class="danger">Réinitialiser</button>
+  </section>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <!-- Pop-up de confirmation pour la réinitialisation -->
+  <div id="resetOverlay" class="overlay">
+    <div class="popup">
+      <h2>Réinitialiser toutes les données ?</h2>
+      <p>Souhaitez-vous d'abord sauvegarder (exporter) vos données ?</p>
+      <div class="popup-actions">
+        <button id="confirmResetBtn">Oui, tout effacer</button>
+        <button id="cancelResetBtn">Non, annuler</button>
+      </div>
+    </div>
+  </div>
 
+  <!-- Script principal -->
+  <script src="script.js"></script>
 </body>
 </html>
