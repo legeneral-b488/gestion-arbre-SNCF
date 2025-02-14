@@ -3,15 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <title>Application Saisie Arbres</title>
-  <!-- Feuille de style -->
   <link rel="stylesheet" href="styles.css">
-
-  <!-- Librairie SheetJS pour l'export Excel -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
 
-  <!-- Logo SNCF en haut à droite + signature -->
+  <!-- HEADER : Logo + Signature -->
   <header>
     <div class="header-content">
         <div class="logo-container">
@@ -19,41 +16,31 @@
                  alt="Logo SNCF" class="custom-logo">
         </div>
         <div class="sncf-logo">
-            <p class="signature">création de Jules VERILHAC</p>
+            <p class="signature">Création de Jules VERILHAC</p>
         </div>
     </div>
-</header>
+  </header>
 
-
-  <!-- Bouton pour activer/désactiver le mode sombre -->
+  <!-- Bouton Mode Sombre -->
   <button id="darkModeToggle">Mode Sombre</button>
 
-  <!-- Pop-up pour choisir la ligne au chargement + bouton de changement -->
-  <div id="lineSelectionOverlay" class="overlay">
-    <div class="popup">
-      <h2>Choisir une ligne</h2>
-      <select id="initialLineSelect">
-        <option value="" disabled selected>-- Sélectionnez une ligne --</option>
-        <option value="L909000">L909000</option>
-        <option value="L908000">L908000</option>
-        <option value="L909903">L909903</option>
-        <option value="L903000">L903000</option>
-        <option value="L905000">L905000</option>
-      </select>
-      <button id="confirmLineBtn">Valider</button>
-    </div>
-  </div>
-
-  <!-- Bannière qui affiche la ligne en cours -->
-  <div id="currentLineBanner" class="line-banner">
-    Ligne actuelle : <span id="currentLine"></span>
-    <button id="changeLineBtn" class="change-line">Changer de ligne</button>
-  </div>
-
-  <!-- Section pour le formulaire -->
+  <!-- Formulaire principal -->
   <section id="formSection">
     <h1>Formulaire de saisie des arbres</h1>
     <form id="treeForm">
+
+      <!-- Sélection de la ligne ferroviaire -->
+      <div class="form-line-banner">
+        <label for="initialLineSelect">Ligne Ferroviaire</label>
+        <select id="initialLineSelect">
+          <option value="" disabled selected>-- Sélectionnez une ligne --</option>
+          <option value="L909000">L909000</option>
+          <option value="L908000">L908000</option>
+          <option value="L909903">L909903</option>
+          <option value="L903000">L903000</option>
+          <option value="L905000">L905000</option>
+        </select>
+      </div>
 
       <!-- Voie -->
       <label for="voieSelect">Voie</label>
@@ -119,16 +106,16 @@
         </label>
       </fieldset>
 
-      <!-- Commentaire -->
+      <!-- Commentaire (optionnel) -->
       <label for="commentaire">Commentaire</label>
       <textarea id="commentaire" rows="3" placeholder="Vos remarques..."></textarea>
 
-      <!-- Bouton valider -->
+      <!-- Bouton Valider -->
       <button type="submit" id="submitBtn">Valider</button>
     </form>
   </section>
 
-  <!-- Section du tableau affichant les saisies -->
+  <!-- Section affichage des données -->
   <section id="tableSection">
     <h2>Données Saisies</h2>
     <div class="table-wrapper">
@@ -151,7 +138,7 @@
           </tr>
         </thead>
         <tbody>
-          <!-- Les lignes seront insérées ici dynamiquement -->
+          <!-- Les lignes seront insérées dynamiquement -->
         </tbody>
       </table>
     </div>
@@ -163,7 +150,7 @@
     <button id="resetDataBtn" class="danger">Réinitialiser</button>
   </section>
 
-  <!-- Pop-up de confirmation pour la réinitialisation -->
+  <!-- Pop-up de confirmation pour réinitialisation -->
   <div id="resetOverlay" class="overlay">
     <div class="popup">
       <h2>Réinitialiser toutes les données ?</h2>
@@ -175,7 +162,6 @@
     </div>
   </div>
 
-  
   <!-- Script principal -->
   <script src="script.js"></script>
 </body>

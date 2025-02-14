@@ -179,3 +179,28 @@ th, td {
 .dark-mode thead {
   background-color: #444;
 }
+.form-line-banner {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 1rem;
+  border-radius: 6px;
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.form-line-banner label {
+  font-weight: bold;
+  font-size: 1.2rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.form-line-banner select {
+  width: 100%;
+  padding: 0.8rem;
+  font-size: 1.2rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  text-align: center;
+}
