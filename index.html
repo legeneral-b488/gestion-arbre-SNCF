@@ -50,7 +50,7 @@
         <option value="V2">V2</option>
       </select>
 
-      <!-- Champ Côté -->
+      <!-- Côté -->
       <fieldset>
         <legend>Côté</legend>
         <label>
@@ -74,6 +74,10 @@
       <!-- Distance voie -->
       <label for="distanceVoie">Distance voie (m)</label>
       <input type="number" step="0.01" id="distanceVoie" required />
+
+      <!-- Hauteur (Nouveau champ) -->
+      <label for="hauteur">Hauteur (m)</label>
+      <input type="number" step="0.01" id="hauteur" placeholder="Ex : 15.5" />
 
       <!-- Nombre d'arbres -->
       <label for="nbArbres">Nombre d'arbres</label>
@@ -107,7 +111,7 @@
         </label>
       </fieldset>
 
-      <!-- Stabilité + Maladie (remplacement de “Stabilité menacée” par “Stabilité”) -->
+      <!-- Stabilité + Maladie -->
       <fieldset>
         <legend>État de l'arbre</legend>
         <label>
@@ -166,27 +170,28 @@
       <table id="dataTable">
         <thead>
           <tr>
-            <th>Ligne</th>
-            <th>Voie</th>
-            <th>PK Début</th>
-            <th>PK Fin</th>
-            <th>Distance</th>
-            <th>Nb Arbres</th>
-            <th>Propriétaire</th>
-            <th>Décision</th>
-            <th>Urgence</th>
-            <th>Stabilité</th>
-            <th>Maladie</th>
-            <th>Commentaire</th>
-            <!-- Ajouts de nouvelles colonnes : Côté, Diamètre, Débroussaillage -->
-            <th>Côté</th>
-            <th>Diamètre</th>
-            <th>Débroussaillage</th>
-            <th>Actions</th>
+            <!-- IMPORTANT : l'ordre correspond à ce que nous avons décrit dans ton script -->
+            <th>Ligne</th>         <!-- 1 -->
+            <th>Voie</th>         <!-- 2 -->
+            <th>PK Début</th>     <!-- 3 -->
+            <th>PK Fin</th>       <!-- 4 -->
+            <th>Distance</th>     <!-- 5 -->
+            <th>Hauteur</th>      <!-- 6 (nouveau) -->
+            <th>Nb Arbres</th>    <!-- 7 -->
+            <th>Propriétaire</th> <!-- 8 -->
+            <th>Décision</th>     <!-- 9 -->
+            <th>Urgence</th>      <!-- 10 -->
+            <th>Stabilité</th>    <!-- 11 -->
+            <th>Maladie</th>      <!-- 12 -->
+            <th>Commentaire</th>  <!-- 13 -->
+            <th>Côté</th>         <!-- 14 -->
+            <th>Diamètre</th>     <!-- 15 -->
+            <th>Débroussaillage</th><!-- 16 -->
+            <th>Actions</th>      <!-- 17 -->
           </tr>
         </thead>
         <tbody>
-          <!-- Les lignes seront insérées dynamiquement -->
+          <!-- Les lignes seront insérées dynamiquement par renderTable() -->
         </tbody>
       </table>
     </div>

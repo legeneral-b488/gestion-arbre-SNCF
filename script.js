@@ -15,6 +15,9 @@ const pkDebutInput = document.getElementById("pkDebut");
 const pkFinInput = document.getElementById("pkFin");
 const voieSelect = document.getElementById("voieSelect");
 const distanceVoieInput = document.getElementById("distanceVoie");
+// Nouveau champ HAUTEUR
+const hauteurInput = document.getElementById("hauteur");
+
 const nbArbresInput = document.getElementById("nbArbres");
 const proprietaireSelect = document.getElementById("proprietaireSelect");
 const decisionSelect = document.getElementById("decisionSelect");
@@ -25,8 +28,10 @@ const checkStabilite = document.getElementById("checkStabilite");
 const checkMaladie = document.getElementById("checkMaladie");
 const commentaireInput = document.getElementById("commentaire");
 
-// Nouveaux champs ajoutés
-// (Pas de const pour PB21, PB22, PB31, PB32, PB33, on ira les chercher directement via getElementById dans le code)
+// Pas de const pour PB21, etc., on utilisera getElementById
+// Côté => document.querySelector("input[name='cote']:checked")
+// PB31 / PB32 / PB33 => see below
+// PB21 / PB22 => see below
 
 const submitBtn = document.getElementById("submitBtn");
 
@@ -78,11 +83,9 @@ treeForm.addEventListener("submit", (event) => {
     return;
   }
 
-  // Anti-double-clic trop rapide
   const now = Date.now();
   if (now - lastInsertTimestamp < 1000) return;  
 
-  // Vérifie la validité du formulaire
   const errors = validateForm();
   if (errors.length > 0) {
     alert("Erreurs:\n - " + errors.join("\n - "));
@@ -91,48 +94,53 @@ treeForm.addEventListener("submit", (event) => {
 
   const urgenceValue = calculerUrgence();
 
-  // Constitution de l'objet avec TOUS les champs (y compris les nouveaux)
   const newData = {
-    // Champs déjà présents
     ligne: currentLine,
     voie: voieSelect.value,
     pkDebut: pkDebutInput.value,
     pkFin: pkFinInput.value || "",
     distance: distanceVoieInput.value,
-    nbArbres: nbArbresInput.value,
-    proprio: proprietaireSelect.value,
-    decision: decisionSelect.value,
-    urgence: urgenceValue,
-    stabilite: checkStabilite.checked ? "Oui" : "Non",
-    maladie: checkMaladie.checked ? "Oui" : "Non",
-    commentaire: commentaireInput.value || "",
+    // Position 6 => Hauteur
+    hauteur: hauteurInput.value || "",
 
-    // Champs ajoutés : Côté, Diamètre, Débroussaillage
+    // Position 7 => Nb arbres
+    nbArbres: nbArbresInput.value,
+
+    // 8 => Proprietaire
+    proprio: proprietaireSelect.value,
+    // 9 => Decision
+    decision: decisionSelect.value,
+    // 10 => Urgence
+    urgence: urgenceValue,
+    // 11 => Stabilité
+    stabilite: checkStabilite.checked ? "Oui" : "Non",
+    // 12 => Maladie
+    maladie: checkMaladie.checked ? "Oui" : "Non",
+    // 13 => Commentaire
+    commentaire: commentaireInput.value || "",
+    // 14 => Côté
     cote: document.querySelector("input[name='cote']:checked")?.value || "",
+    // 15 => Diamètre
     diametre: [
       document.getElementById("PB31")?.checked ? "PB31" : "",
       document.getElementById("PB32")?.checked ? "PB32" : "",
       document.getElementById("PB33")?.checked ? "PB33" : ""
     ].filter(Boolean).join(", "),
+    // 16 => Débroussaillage
     debroussaillage: [
       document.getElementById("PB21")?.checked ? "PB21" : "",
       document.getElementById("PB22")?.checked ? "PB22" : ""
     ].filter(Boolean).join(", ")
   };
 
-  // Ajout à dataArray
   dataArray.push(newData);
   saveDataToLocalStorage();
   renderTable();
 
-  // On réinitialise le formulaire
   treeForm.reset();
-
-  // Après la réinitialisation du formulaire, on remet la ligne sélectionnée
   initialLineSelect.value = currentLine;
   localStorage.setItem("currentLine", currentLine);
 
-  // Empêche de spammer la validation
   submitBtn.disabled = true;
   setTimeout(() => {
     submitBtn.disabled = false;
@@ -156,7 +164,7 @@ function validateForm() {
  * Calcul de l'urgence
  **********************************/
 function calculerUrgence() {
-  // Comme dans ton code initial : U1 si l'arbre est mort, U2 sinon
+  // U1 si l'arbre est mort, U2 sinon
   return arbreMortRadio.checked ? "U1" : "U2";
 }
 
@@ -165,37 +173,52 @@ function calculerUrgence() {
  **********************************/
 function renderTable() {
   dataTable.innerHTML = "";
-  dataArray.forEach((item, index) => {
-    // Création d'une ligne
-    const row = document.createElement("tr");
 
-    // On met TOUTES les colonnes, y compris les nouvelles
+  dataArray.forEach((item, index) => {
+    const row = document.createElement("tr");
+    // L'ordre ici DOIT coller au <thead> (voir points 1..16 + actions)
     row.innerHTML = `
+      <!-- 1: Ligne -->
       <td>${item.ligne}</td>
+      <!-- 2: Voie -->
       <td contenteditable="true">${item.voie}</td>
+      <!-- 3: PK Début -->
       <td contenteditable="true">${item.pkDebut}</td>
+      <!-- 4: PK Fin -->
       <td contenteditable="true">${item.pkFin}</td>
+      <!-- 5: Distance -->
       <td contenteditable="true">${item.distance}</td>
+      <!-- 6: Hauteur -->
+      <td contenteditable="true">${item.hauteur}</td>
+      <!-- 7: Nb Arbres -->
       <td contenteditable="true">${item.nbArbres}</td>
+      <!-- 8: Propriétaire -->
       <td contenteditable="true">${item.proprio}</td>
+      <!-- 9: Décision -->
       <td contenteditable="true">${item.decision}</td>
+      <!-- 10: Urgence (Non contenteditable) -->
       <td>${item.urgence}</td>
+      <!-- 11: Stabilité -->
       <td contenteditable="true">${item.stabilite}</td>
+      <!-- 12: Maladie -->
       <td contenteditable="true">${item.maladie}</td>
+      <!-- 13: Commentaire -->
       <td contenteditable="true">${item.commentaire}</td>
+      <!-- 14: Côté -->
       <td contenteditable="true">${item.cote}</td>
+      <!-- 15: Diamètre -->
       <td contenteditable="true">${item.diametre}</td>
+      <!-- 16: Débroussaillage -->
       <td contenteditable="true">${item.debroussaillage}</td>
+      <!-- 17: Actions -->
       <td>
         <button class="modify-btn" data-index="${index}">Modifier</button>
         <button class="delete-btn" data-index="${index}">🗑️</button>
       </td>
     `;
-
     dataTable.appendChild(row);
   });
 
-  // Bouton de suppression
   document.querySelectorAll(".delete-btn").forEach(btn => {
     btn.addEventListener("click", (e) => {
       const idx = e.target.getAttribute("data-index");
@@ -205,36 +228,50 @@ function renderTable() {
     });
   });
 
-  // Bouton de modification
   document.querySelectorAll(".modify-btn").forEach(btn => {
     btn.addEventListener("click", (e) => {
       const idx = e.target.getAttribute("data-index");
       const row = e.target.closest("tr");
 
       if (btn.textContent === "Modifier") {
-        // On prépare à éditer => on change le texte du bouton
         btn.textContent = "Enregistrer";
       } else {
-        // On enregistre les nouvelles valeurs directement depuis les cellules
+        // Relecture EXACTEMENT dans le même ordre
         const updatedData = {
+          // 1
           ligne: row.children[0].textContent,
+          // 2
           voie: row.children[1].textContent,
+          // 3
           pkDebut: row.children[2].textContent,
+          // 4
           pkFin: row.children[3].textContent,
+          // 5
           distance: row.children[4].textContent,
-          nbArbres: row.children[5].textContent,
-          proprio: row.children[6].textContent,
-          decision: row.children[7].textContent,
-          urgence: row.children[8].textContent,        // Non contenteditable
-          stabilite: row.children[9].textContent,
-          maladie: row.children[10].textContent,
-          commentaire: row.children[11].textContent,
-          cote: row.children[12].textContent,
-          diametre: row.children[13].textContent,
-          debroussaillage: row.children[14].textContent
+          // 6
+          hauteur: row.children[5].textContent,
+          // 7
+          nbArbres: row.children[6].textContent,
+          // 8
+          proprio: row.children[7].textContent,
+          // 9
+          decision: row.children[8].textContent,
+          // 10
+          urgence: row.children[9].textContent, // Non contenteditable
+          // 11
+          stabilite: row.children[10].textContent,
+          // 12
+          maladie: row.children[11].textContent,
+          // 13
+          commentaire: row.children[12].textContent,
+          // 14
+          cote: row.children[13].textContent,
+          // 15
+          diametre: row.children[14].textContent,
+          // 16
+          debroussaillage: row.children[15].textContent
         };
 
-        // Mise à jour dans le tableau global
         dataArray[idx] = updatedData;
         saveDataToLocalStorage();
         renderTable();
