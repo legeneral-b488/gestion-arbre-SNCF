@@ -11,13 +11,14 @@
   <!-- HEADER : Logo + Signature -->
   <header>
     <div class="header-content">
-        <div class="logo-container">
-            <img src="https://upload.wikimedia.org/wikipedia/fr/thumb/e/ec/Logo_SNCF_R%C3%A9seau_2015.svg/langfr-1280px-Logo_SNCF_R%C3%A9seau_2015.svg.png" 
-                 alt="Logo SNCF" class="custom-logo">
-        </div>
-        <div class="sncf-logo">
-            <p class="signature">Création de Jules VERILHAC</p>
-        </div>
+      <div class="logo-container">
+        <img
+          src="https://upload.wikimedia.org/wikipedia/fr/thumb/e/ec/Logo_SNCF_R%C3%A9seau_2015.svg/langfr-1280px-Logo_SNCF_R%C3%A9seau_2015.svg.png"
+          alt="Logo SNCF" class="custom-logo">
+      </div>
+      <div class="sncf-logo">
+        <p class="signature">Création de Jules VERILHAC</p>
+      </div>
     </div>
   </header>
 
@@ -48,6 +49,19 @@
         <option value="V1">V1</option>
         <option value="V2">V2</option>
       </select>
+
+      <!-- Champ Côté -->
+      <fieldset>
+        <legend>Côté</legend>
+        <label>
+          <input type="radio" name="cote" value="GAUCHE">
+          Gauche
+        </label>
+        <label>
+          <input type="radio" name="cote" value="DROITE">
+          Droite
+        </label>
+      </fieldset>
 
       <!-- PK Début -->
       <label for="pkDebut">PK Début</label>
@@ -93,16 +107,46 @@
         </label>
       </fieldset>
 
-      <!-- Stabilité + Maladie -->
+      <!-- Stabilité + Maladie (remplacement de “Stabilité menacée” par “Stabilité”) -->
       <fieldset>
         <legend>État de l'arbre</legend>
         <label>
           <input type="checkbox" id="checkStabilite">
-          Stabilité menacée
+          Stabilité
         </label>
         <label>
           <input type="checkbox" id="checkMaladie">
           Maladie
+        </label>
+      </fieldset>
+
+      <!-- Diamètre (PB31, PB32, PB33) -->
+      <fieldset>
+        <legend>Diamètre</legend>
+        <label>
+          <input type="checkbox" id="PB31">
+          PB31
+        </label>
+        <label>
+          <input type="checkbox" id="PB32">
+          PB32
+        </label>
+        <label>
+          <input type="checkbox" id="PB33">
+          PB33
+        </label>
+      </fieldset>
+
+      <!-- Débroussaillage (PB21, PB22) -->
+      <fieldset>
+        <legend>Débroussaillage</legend>
+        <label>
+          <input type="checkbox" id="PB21">
+          PB21
+        </label>
+        <label>
+          <input type="checkbox" id="PB22">
+          PB22
         </label>
       </fieldset>
 
@@ -134,6 +178,10 @@
             <th>Stabilité</th>
             <th>Maladie</th>
             <th>Commentaire</th>
+            <!-- Ajouts de nouvelles colonnes : Côté, Diamètre, Débroussaillage -->
+            <th>Côté</th>
+            <th>Diamètre</th>
+            <th>Débroussaillage</th>
             <th>Actions</th>
           </tr>
         </thead>
